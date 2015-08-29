@@ -7,6 +7,10 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.flexible.core.parser.EscapeQuerySyntax;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -43,7 +47,27 @@ public class IndexUtil {
 
     public IndexUtil() {
         try {
+            scores.put("itat.org", 2.0F);
+            scores.put("zttc.edu", 1.5F);
             directory = FSDirectory.open(Paths.get("d:/lucene/index02"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update() {
+        try (IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(new StandardAnalyzer()))) {
+
+            // Lucene并没有提供更新，这里的更新操作其实是如下两个操作的合集
+            // 先删除之后再添加
+            Document doc = new Document();
+            doc.add(new StringField("id", "11", Field.Store.YES));
+            doc.add(new TextField("email", emails[0], Field.Store.YES));
+            doc.add(new TextField("content", contents[0], Field.Store.YES));
+            doc.add(new StringField("name", names[0], Field.Store.YES));
+
+            writer.updateDocument(new Term("id", "1"), doc);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,7 +78,6 @@ public class IndexUtil {
             // 分将索引合并成两段，删除后的数据会被清空
             // 3.5后不建议使用，由Lucene自动处理
             writer.forceMerge(2);
-            writer.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,7 +100,7 @@ public class IndexUtil {
             e.printStackTrace();
         }
 
-//        // 使用Writer进行恢复
+//        // 使用Writer进行恢复。未能实现
 //        try (IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(new StandardAnalyzer()))) {
 //            writer.rollback();
 //        } catch (Exception e) {
@@ -113,14 +136,72 @@ public class IndexUtil {
         try (IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(new StandardAnalyzer()))) {
             Document doc = null;
             for (int i = 0; i < ids.length; i++) {
+
+                // 不使用评分
+//                doc = new Document();
+//                String et = emails[i].substring(emails[i].lastIndexOf("@") + 1);
+//                System.out.println(et);
+//                StringField idField = new StringField("id", ids[i], Field.Store.YES);
+//                doc.add(idField);
+//                TextField emailField = new TextField("email", emails[i], Field.Store.YES);
+//                doc.add(emailField);
+//                TextField contentFiled = new TextField("content", contents[i], Field.Store.YES);
+//                doc.add(contentFiled);
+//                StringField nameFiled = new StringField("name", names[i], Field.Store.YES);
+//                doc.add(nameFiled);
+
+                // 使用评分
+                String et = emails[i].substring(emails[i].lastIndexOf("@") + 1);
+                System.out.println(et);
                 doc = new Document();
-                doc.add(new StringField("id", ids[i], Field.Store.YES));
-                doc.add(new TextField("email", emails[i], Field.Store.YES));
-                doc.add(new TextField("content", contents[i], Field.Store.YES));
-                doc.add(new StringField("name", names[i], Field.Store.YES));
+                if (scores.containsKey(et)) {
+                    StringField idField = new StringField("id", ids[i], Field.Store.YES);
+                    doc.add(idField);
+
+                    TextField emailField = new TextField("email", emails[i], Field.Store.YES);
+                    emailField.setBoost(scores.get(et));
+                    doc.add(emailField);
+
+                    TextField contentFiled = new TextField("content", contents[i], Field.Store.YES);
+                    contentFiled.setBoost(scores.get(et));
+                    doc.add(contentFiled);
+
+                    StringField nameFiled = new StringField("name", names[i], Field.Store.YES);
+                    doc.add(nameFiled);
+                } else {
+                    StringField idField = new StringField("id", ids[i], Field.Store.YES);
+                    doc.add(idField);
+
+                    TextField emailField = new TextField("email", emails[i], Field.Store.YES);
+                    emailField.setBoost(0.5F);
+                    doc.add(emailField);
+
+                    TextField contentFiled = new TextField("content", contents[i], Field.Store.YES);
+                    contentFiled.setBoost(0.5F);
+                    doc.add(contentFiled);
+
+                    StringField nameFiled = new StringField("name", names[i], Field.Store.YES);
+                    doc.add(nameFiled);
+                }
+
 
                 writer.addDocument(doc);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void search() {
+        try (IndexReader reader = DirectoryReader.open(directory)) {
+            IndexSearcher searcher = new IndexSearcher(reader);
+            TermQuery query = new TermQuery(new Term("content", "like"));
+            TopDocs tds = searcher.search(query, 10);
+            for (ScoreDoc sd : tds.scoreDocs) {
+                Document doc = searcher.doc(sd.doc);
+                System.out.println("(" + sd.doc + ")" + doc.get("name") + "[" + doc.get("email") + "]-->" + doc.get("id"));
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

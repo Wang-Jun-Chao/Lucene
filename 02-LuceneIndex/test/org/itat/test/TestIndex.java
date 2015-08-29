@@ -47,4 +47,14 @@ public class TestIndex {
     public void testMerge() {
         iu.merge();
     }
+
+    @Test
+    public void testUpdate() {
+        iu.update();
+    }
+
+    @Test
+    public void testSearch() {
+         iu.search();
+    }
 }
