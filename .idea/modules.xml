@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/01-HelloLucence/01-HelloLucence.iml" filepath="$PROJECT_DIR$/01-HelloLucence/01-HelloLucence.iml" />
+      <module fileurl="file://$PROJECT_DIR$/02-LuceneIndex/02-LuceneIndex.iml" filepath="$PROJECT_DIR$/02-LuceneIndex/02-LuceneIndex.iml" />
+    </modules>
+  </component>
+</project>
