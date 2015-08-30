@@ -64,7 +64,7 @@ public class TestIndex {
     public void testSearch02() {
         for (int i = 0; i < 5; i++) {
             iu.search02();
-            System.out.println("======");
+            System.out.println("========");
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
