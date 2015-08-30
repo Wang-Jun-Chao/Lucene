@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/01-HelloLucene/01-HelloLucene.iml" filepath="$PROJECT_DIR$/01-HelloLucene/01-HelloLucene.iml" />
       <module fileurl="file://$PROJECT_DIR$/02-LuceneIndex/02-LuceneIndex.iml" filepath="$PROJECT_DIR$/02-LuceneIndex/02-LuceneIndex.iml" />
+      <module fileurl="file://$PROJECT_DIR$/03-LuceneSearcher/03-LuceneSearcher.iml" filepath="$PROJECT_DIR$/03-LuceneSearcher/03-LuceneSearcher.iml" />
     </modules>
   </component>
 </project>

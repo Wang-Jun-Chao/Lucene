@@ -3,7 +3,6 @@ package org.itat.index;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
-import org.apache.lucene.queryparser.flexible.core.parser.EscapeQuerySyntax;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
@@ -12,7 +11,6 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.RAMDirectory;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,7 +40,6 @@ public class IndexUtil {
     private String[] names = {"zhangsan", "lisi", "john", "jetty", "mike", "jake"};
     private Directory directory = null;
     private Map<String, Float> scores = new HashMap<String, Float>();
-    private static IndexReader reader = null;
 
 
     public IndexUtil() {
@@ -50,37 +47,14 @@ public class IndexUtil {
             setDates();
             scores.put("itat.org", 2.0F);
             scores.put("zttc.edu", 1.5F);
-            directory = FSDirectory.open(Paths.get("d:/lucene/index02"));
-            // 存储在内存中使用时要与index()方法一起使用
-//            directory = new RAMDirectory();
-//            index();
-
-            reader = DirectoryReader.open(directory);
+//             存储在内存中使用时要与index()方法一起使用
+            directory = new RAMDirectory();
+            index();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public IndexSearcher getSearcher() {
-
-        try {
-            if (reader == null) {
-                reader = DirectoryReader.open(directory);
-            } else {
-                reader = DirectoryReader.openIfChanged((DirectoryReader) reader);
-            }
-
-            if (reader == null) {
-                reader = DirectoryReader.open(directory);
-            }
-
-            return new IndexSearcher(reader);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
     private void setDates() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -158,11 +132,6 @@ public class IndexUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void delete02() {
-        // 使用reader进行删除，但是5.3已经不能使用
-//            reader.deleteDocuments(new Term("id", "1"));
     }
 
     public void query() {
@@ -250,42 +219,6 @@ public class IndexUtil {
 
 
                 writer.addDocument(doc);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void search01() {
-        try (IndexReader reader = DirectoryReader.open(directory)) {
-            IndexSearcher searcher = new IndexSearcher(reader);
-            TermQuery query = new TermQuery(new Term("content", "like"));
-            TopDocs tds = searcher.search(query, 10);
-            for (ScoreDoc sd : tds.scoreDocs) {
-                Document doc = searcher.doc(sd.doc);
-                System.out.println("(" + sd.doc + "-" + doc.getField("content").boost() + "-" + sd.score + ")"
-                        + doc.get("name") + "[" + doc.get("email") + "]-->" + doc.get("id") + ","
-                        + doc.get("attach") + "," + doc.get("date"));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void search02() {
-        try {
-            IndexSearcher searcher = getSearcher();
-            TermQuery query = new TermQuery(new Term("content", "like"));
-            TopDocs tds = searcher.search(query, 10);
-            for (ScoreDoc sd : tds.scoreDocs) {
-                Document doc = searcher.doc(sd.doc);
-//                System.out.println("(" + sd.doc + "-" + doc.getField("content").boost() + "-" + sd.score + ")"
-//                        + doc.get("name") + "[" + doc.get("email") + "]-->" + doc.get("id") + ","
-//                        + doc.get("attach") + "," + doc.get("date"));
-                System.out.println("(" + doc.get("id") + ")"
-                        + doc.get("name") + "[" + doc.get("email") + "]-->" + doc.get("id") + ","
-                        + doc.get("attach") + "," + doc.get("date"));
             }
         } catch (Exception e) {
             e.printStackTrace();
