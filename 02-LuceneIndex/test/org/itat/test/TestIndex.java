@@ -4,6 +4,8 @@ import org.itat.index.IndexUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Author: Íõ¿¡³¬
  * Date: 2015-08-29
@@ -54,7 +56,20 @@ public class TestIndex {
     }
 
     @Test
-    public void testSearch() {
-         iu.search();
+    public void testSearch01() {
+         iu.search01();
+    }
+
+    @Test
+    public void testSearch02() {
+        for (int i = 0; i < 5; i++) {
+            iu.search02();
+            System.out.println("======");
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

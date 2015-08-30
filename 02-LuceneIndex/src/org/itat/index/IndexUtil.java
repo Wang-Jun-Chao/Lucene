@@ -1,10 +1,7 @@
 package org.itat.index;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.flexible.core.parser.EscapeQuerySyntax;
 import org.apache.lucene.search.IndexSearcher;
@@ -16,6 +13,8 @@ import org.apache.lucene.store.FSDirectory;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,10 +46,48 @@ public class IndexUtil {
 
     public IndexUtil() {
         try {
+            setDates();
             scores.put("itat.org", 2.0F);
             scores.put("zttc.edu", 1.5F);
             directory = FSDirectory.open(Paths.get("d:/lucene/index02"));
+//            reader = DirectoryReader.open(directory);
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public IndexSearcher getSearcher() {
+
+        try {
+            if (reader == null) {
+                reader = DirectoryReader.open(directory);
+            } else {
+                reader = DirectoryReader.openIfChanged((DirectoryReader) reader);
+            }
+
+            if (reader == null) {
+                reader = DirectoryReader.open(directory);
+            }
+
+            return new IndexSearcher(reader);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private void setDates() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            dates = new Date[ids.length];
+            dates[0] = sdf.parse("2010-02-19");
+            dates[1] = sdf.parse("2012-01-11");
+            dates[2] = sdf.parse("2011-09-19");
+            dates[3] = sdf.parse("2010-12-22");
+            dates[4] = sdf.parse("2012-01-01");
+            dates[5] = sdf.parse("2011-05-19");
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
@@ -134,6 +171,7 @@ public class IndexUtil {
     public void index() {
 
         try (IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(new StandardAnalyzer()))) {
+            writer.deleteAll();
             Document doc = null;
             for (int i = 0; i < ids.length; i++) {
 
@@ -168,6 +206,15 @@ public class IndexUtil {
 
                     StringField nameFiled = new StringField("name", names[i], Field.Store.YES);
                     doc.add(nameFiled);
+
+                    // ´æ´¢Êý×Ö
+                    IntField attachesField = new IntField("attach", attachs[i], Field.Store.YES);
+                    doc.add(attachesField);
+
+                    // ´æ´¢ÈÕÆÚ
+                    LongField dateField = new LongField("date", dates[i].getTime(), Field.Store.YES);
+                    doc.add(dateField);
+
                 } else {
                     StringField idField = new StringField("id", ids[i], Field.Store.YES);
                     doc.add(idField);
@@ -182,6 +229,14 @@ public class IndexUtil {
 
                     StringField nameFiled = new StringField("name", names[i], Field.Store.YES);
                     doc.add(nameFiled);
+
+                    // ´æ´¢Êý×Ö
+                    IntField attachesField = new IntField("attach", attachs[i], Field.Store.YES);
+                    doc.add(attachesField);
+
+                    // ´æ´¢ÈÕÆÚ
+                    LongField dateField = new LongField("date", dates[i].getTime(), Field.Store.YES);
+                    doc.add(dateField);
                 }
 
 
@@ -192,16 +247,37 @@ public class IndexUtil {
         }
     }
 
-    public void search() {
+    public void search01() {
         try (IndexReader reader = DirectoryReader.open(directory)) {
             IndexSearcher searcher = new IndexSearcher(reader);
             TermQuery query = new TermQuery(new Term("content", "like"));
             TopDocs tds = searcher.search(query, 10);
             for (ScoreDoc sd : tds.scoreDocs) {
                 Document doc = searcher.doc(sd.doc);
-                System.out.println("(" + sd.doc + ")" + doc.get("name") + "[" + doc.get("email") + "]-->" + doc.get("id"));
+                System.out.println("(" + sd.doc + "-" + doc.getField("content").boost() + "-" + sd.score + ")"
+                        + doc.get("name") + "[" + doc.get("email") + "]-->" + doc.get("id") + ","
+                        + doc.get("attach") + "," + doc.get("date"));
             }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void search02() {
+        try {
+            IndexSearcher searcher = getSearcher();
+            TermQuery query = new TermQuery(new Term("content", "like"));
+            TopDocs tds = searcher.search(query, 10);
+            for (ScoreDoc sd : tds.scoreDocs) {
+                Document doc = searcher.doc(sd.doc);
+//                System.out.println("(" + sd.doc + "-" + doc.getField("content").boost() + "-" + sd.score + ")"
+//                        + doc.get("name") + "[" + doc.get("email") + "]-->" + doc.get("id") + ","
+//                        + doc.get("attach") + "," + doc.get("date"));
+                System.out.println("(" + doc.get("id") + ")"
+                        + doc.get("name") + "[" + doc.get("email") + "]-->" + doc.get("id") + ","
+                        + doc.get("attach") + "," + doc.get("date"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
