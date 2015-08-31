@@ -1,12 +1,18 @@
 package itat.org.test;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Query;
+import org.itat.index.FileIndexUtils;
 import org.itat.index.SearcherUtil;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Author: 王俊超
@@ -20,6 +26,20 @@ public class TestSearch {
     @Before
     public void init() {
         su = new SearcherUtil();
+    }
+
+    @Test
+    public void testCopyFile() {
+        File dir = new File("d:/lucene/example/");
+        try {
+            for (File file : dir.listFiles()) {
+                String destFileName = FilenameUtils.getFullPath(file.getAbsolutePath()) +
+                        FilenameUtils.getBaseName(file.getName()) + ".he";
+                FileUtils.copyFile(file, new File(destFileName));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -117,5 +137,24 @@ public class TestSearch {
         Query query = parser.parse("attach:[2 TO 10]");
 
         su.searchByQueryParser(query, 10);
+    }
+
+
+    @Test
+    public void indexFile() {
+        FileIndexUtils.index(true);
+    }
+
+    @Test
+    public void testSearchPage01() {
+        su.searchPage("java", 1, 20);
+        System.out.println("----------------");
+//        su.searchNoPage("java");
+        su.searchPageByAfter("java", 1, 20);
+    }
+
+    @Test
+    public void testSearchPage02() {
+        su.searchPageByAfter("java", 4, 20);
     }
 }

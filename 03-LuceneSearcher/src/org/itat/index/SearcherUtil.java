@@ -3,10 +3,12 @@ package org.itat.index;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.BytesRef;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -63,6 +65,26 @@ public class SearcherUtil {
     }
 
     public IndexSearcher getSearcher() {
+        try {
+            if (reader == null) {
+                reader = DirectoryReader.open(directory);
+
+            } else {
+                reader = DirectoryReader.openIfChanged((DirectoryReader) reader);
+            }
+
+            if (reader == null) {
+                reader = DirectoryReader.open(directory);
+            }
+            return new IndexSearcher(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public IndexSearcher getSearcher(Directory directory) {
         try {
             if (reader == null) {
                 reader = DirectoryReader.open(directory);
@@ -298,6 +320,86 @@ public class SearcherUtil {
                 System.out.println("(" + doc.get("id") + "-" + doc.getField("content").boost() + "-" + sd.score + ")"
                         + doc.get("name") + "[" + doc.get("email") + "]-->" + doc.get("attach") + "," + doc.get("date"));
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void searchPage(String query, int pageIndex, int pageSize) {
+        try {
+            Directory dir = FileIndexUtils.getDirectory();
+            IndexSearcher searcher = getSearcher(dir);
+            QueryParser parser = new QueryParser("content", new StandardAnalyzer());
+            Query q = parser.parse(query);
+            TopDocs tds = searcher.search(q, 500);
+            ScoreDoc[] sds = tds.scoreDocs;
+            int start = (pageIndex - 1) * pageSize;
+            int end = pageIndex * pageSize;
+            for (int i = start; i < end; i++) {
+                Document doc = searcher.doc(sds[i].doc);
+                System.out.println(sds[i].doc + ":" + doc.get("path") + "--->" + doc.get("filename"));
+            }
+
+        } catch (org.apache.lucene.queryparser.classic.ParseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void searchNoPage(String query) {
+        try {
+            Directory dir = FileIndexUtils.getDirectory();
+            IndexSearcher searcher = getSearcher(dir);
+            QueryParser parser = new QueryParser("content", new StandardAnalyzer());
+            Query q = parser.parse(query);
+            TopDocs tds = searcher.search(q, 500);
+            ScoreDoc[] sds = tds.scoreDocs;
+            for (int i = 0; i < sds.length; i++) {
+                Document doc = searcher.doc(sds[i].doc);
+                System.out.println(sds[i].doc + ":" + doc.get("path") + "--->" + doc.get("filename"));
+            }
+
+        } catch (org.apache.lucene.queryparser.classic.ParseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ScoreDoc getLastScoreDoc(int pageIndex, int pageSize, Query query, IndexSearcher searcher) {
+        if (pageIndex <= 1) {
+            return null;
+        } else {
+            try {
+                int num = pageSize * (pageIndex - 1);// 获取上一页的数量
+                TopDocs tds = searcher.search(query, num);
+                return tds.scoreDocs[num - 1];
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    public void searchPageByAfter(String query, int pageIndex, int pageSize) {
+        try {
+            Directory dir = FileIndexUtils.getDirectory();
+            IndexSearcher searcher = getSearcher(dir);
+            QueryParser parser = new QueryParser("content", new StandardAnalyzer());
+            Query q = parser.parse(query);
+
+            ScoreDoc lastSd = getLastScoreDoc(pageIndex, pageSize, q, searcher);
+            TopDocs tds = searcher.searchAfter(lastSd, q, pageSize);
+            ScoreDoc[] sds = tds.scoreDocs;
+            for (int i = 0; i < sds.length; i++) {
+                Document doc = searcher.doc(sds[i].doc);
+                System.out.println(sds[i].doc + ":" + doc.get("path") + "--->" + doc.get("filename"));
+            }
+
+        } catch (org.apache.lucene.queryparser.classic.ParseException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
