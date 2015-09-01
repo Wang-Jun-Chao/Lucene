@@ -1,15 +1,29 @@
 package org.lucene.test;
 
-import com.chenlb.mmseg4j.analysis.MMSegAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.RAMDirectory;
 import org.junit.Test;
-import org.luncene.util.AnalyzerUtils;
-import org.luncene.util.MyStopAnalyzer;
+import org.itat.lucene.util.AnalyzerUtils;
+import org.itat.lucene.util.MySameAnalyzer;
+import org.itat.lucene.util.MyStopAnalyzer;
+import org.itat.lucene.util.SampleSameWordContext2;
+import org.luncene.util.*;
 
 /**
  * Author: 王俊超
@@ -85,5 +99,32 @@ public class TestAnalyzer {
         AnalyzerUtils.displayToken(txt, a1);
         AnalyzerUtils.displayToken(txt, a2);
         AnalyzerUtils.displayToken(txt, a3);
+    }
+
+    @Test
+    public void test05() {
+//        Analyzer a1 = new MySameAnalyzer(new SampleSameWordContext());
+        Analyzer a1 = new MySameAnalyzer(new SampleSameWordContext2());
+
+        String txt = "我来自中国广东广州知名地区";
+//        String txt = "中国的植物活化石银杏最早出现于3.45亿年前的石炭纪";
+//        AnalyzerUtils.displayToken(txt, a1);
+
+        Directory dir = new RAMDirectory();
+        try (IndexWriter writer = new IndexWriter(dir, new IndexWriterConfig(a1))) {
+            Document doc = new Document();
+            doc.add(new TextField("content", txt, Field.Store.YES));
+            writer.addDocument(doc);
+            // 必须要提交才能创建到内存中
+            writer.commit();
+            IndexSearcher searcher = new IndexSearcher(DirectoryReader.open(dir));
+            TopDocs tds = searcher.search(new TermQuery(new Term("content", "中国")), 10);
+            Document d = searcher.doc(tds.scoreDocs[0].doc);
+            System.out.println(d.get("content"));
+            AnalyzerUtils.displayToken(txt, a1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

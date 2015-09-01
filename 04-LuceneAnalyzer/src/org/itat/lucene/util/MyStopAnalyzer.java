@@ -1,19 +1,13 @@
-package org.luncene.util;
+package org.itat.lucene.util;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.LetterTokenizer;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.core.StopFilter;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
-import org.apache.lucene.analysis.synonym.SynonymFilter;
 import org.apache.lucene.analysis.util.CharArraySet;
-
-import java.io.IOException;
-import java.util.Set;
 
 /**
  * Author: 王俊超

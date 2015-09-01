@@ -1,4 +1,4 @@
-package org.luncene.util;
+package org.itat.lucene.util;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
