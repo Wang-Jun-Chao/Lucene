@@ -18,12 +18,11 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
-import org.junit.Test;
 import org.itat.lucene.util.AnalyzerUtils;
 import org.itat.lucene.util.MySameAnalyzer;
 import org.itat.lucene.util.MyStopAnalyzer;
 import org.itat.lucene.util.SampleSameWordContext2;
-import org.luncene.util.*;
+import org.junit.Test;
 
 /**
  * Author: 王俊超

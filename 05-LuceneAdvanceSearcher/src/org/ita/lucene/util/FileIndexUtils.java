@@ -49,7 +49,10 @@ public class FileIndexUtils {
                 doc.add(new StringField("filename", file.getName(), Field.Store.YES));
                 doc.add(new StringField("path", file.getAbsolutePath(), Field.Store.YES));
                 doc.add(new LongField("date", file.lastModified(), Field.Store.YES));
-                doc.add(new LongField("size", file.length() / 1024, Field.Store.YES));
+                doc.add(new LongField("size", file.length(), Field.Store.YES));
+                // 用作排序使用，在5.2.1后要专门使用这个字段进行排序，使用NumericDocValuesField类型
+                doc.add(new NumericDocValuesField("date", file.lastModified()));
+                doc.add(new NumericDocValuesField("size", file.length()));
                 writer.addDocument(doc);
             }
 
