@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Author: ç‹ä¿Šè¶…
+ * Author: Íõ¿¡³¬
  * Date: 2015-08-29
  * Time: 14:48
  * Declaration: All Rights Reserved !!!
@@ -51,7 +51,7 @@ public class IndexUtil {
             scores.put("itat.org", 2.0F);
             scores.put("zttc.edu", 1.5F);
             directory = FSDirectory.open(Paths.get("d:/lucene/index02"));
-            // å­˜å‚¨åœ¨å†…å­˜ä¸­ä½¿ç”¨æ—¶è¦ä¸index()æ–¹æ³•ä¸€èµ·ä½¿ç”¨
+            // ´æ´¢ÔÚÄÚ´æÖĞÊ¹ÓÃÊ±ÒªÓëindex()·½·¨Ò»ÆğÊ¹ÓÃ
 //            directory = new RAMDirectory();
 //            index();
 
@@ -100,8 +100,8 @@ public class IndexUtil {
     public void update() {
         try (IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(new StandardAnalyzer()))) {
 
-            // Luceneå¹¶æ²¡æœ‰æä¾›æ›´æ–°ï¼Œè¿™é‡Œçš„æ›´æ–°æ“ä½œå…¶å®æ˜¯å¦‚ä¸‹ä¸¤ä¸ªæ“ä½œçš„åˆé›†
-            // å…ˆåˆ é™¤ä¹‹åå†æ·»åŠ 
+            // Lucene²¢Ã»ÓĞÌá¹©¸üĞÂ£¬ÕâÀïµÄ¸üĞÂ²Ù×÷ÆäÊµÊÇÈçÏÂÁ½¸ö²Ù×÷µÄºÏ¼¯
+            // ÏÈÉ¾³ıÖ®ºóÔÙÌí¼Ó
             Document doc = new Document();
             doc.add(new StringField("id", "11", Field.Store.YES));
             doc.add(new TextField("email", emails[0], Field.Store.YES));
@@ -117,8 +117,8 @@ public class IndexUtil {
 
     public void merge() {
         try (IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(new StandardAnalyzer()))) {
-            // åˆ†å°†ç´¢å¼•åˆå¹¶æˆä¸¤æ®µï¼Œåˆ é™¤åçš„æ•°æ®ä¼šè¢«æ¸…ç©º
-            // 3.5åä¸å»ºè®®ä½¿ç”¨ï¼Œç”±Luceneè‡ªåŠ¨å¤„ç†
+            // ·Ö½«Ë÷ÒıºÏ²¢³ÉÁ½¶Î£¬É¾³ıºóµÄÊı¾İ»á±»Çå¿Õ
+            // 3.5ºó²»½¨ÒéÊ¹ÓÃ£¬ÓÉLucene×Ô¶¯´¦Àí
             writer.forceMerge(2);
         } catch (Exception e) {
             e.printStackTrace();
@@ -137,12 +137,12 @@ public class IndexUtil {
     public void undelete() {
 
         try (IndexReader reader = DirectoryReader.open(directory)) {
-            // 3.6åä¸èƒ½ä½¿ç”¨readerè¿›è¡Œè¿˜åŸäº†
+            // 3.6ºó²»ÄÜÊ¹ÓÃreader½øĞĞ»¹Ô­ÁË
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-//        // ä½¿ç”¨Writerè¿›è¡Œæ¢å¤ã€‚æœªèƒ½å®ç°
+//        // Ê¹ÓÃWriter½øĞĞ»Ö¸´¡£Î´ÄÜÊµÏÖ
 //        try (IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(new StandardAnalyzer()))) {
 //            writer.rollback();
 //        } catch (Exception e) {
@@ -152,7 +152,7 @@ public class IndexUtil {
 
     public void delete() {
         try (IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(new StandardAnalyzer()))) {
-            // å‚æ•°æ˜¯ä¸€ä¸ªé€‰é¡¹ï¼Œå¯ä»¥æ˜¯ä¸€ä¸ªQueryï¼Œä¹Ÿå¯ä»¥æ˜¯ä¸€ä¸ªTermï¼ˆç²¾ç¡®å€¼ï¼‰
+            // ²ÎÊıÊÇÒ»¸öÑ¡Ïî£¬¿ÉÒÔÊÇÒ»¸öQuery£¬Ò²¿ÉÒÔÊÇÒ»¸öTerm£¨¾«È·Öµ£©
             writer.deleteDocuments(new Term("id", "1"));
             writer.commit();
         } catch (Exception e) {
@@ -161,13 +161,13 @@ public class IndexUtil {
     }
 
     public void delete02() {
-        // ä½¿ç”¨readerè¿›è¡Œåˆ é™¤ï¼Œä½†æ˜¯5.3å·²ç»ä¸èƒ½ä½¿ç”¨
+        // Ê¹ÓÃreader½øĞĞÉ¾³ı£¬µ«ÊÇ5.3ÒÑ¾­²»ÄÜÊ¹ÓÃ
 //            reader.deleteDocuments(new Term("id", "1"));
     }
 
     public void query() {
         try (IndexReader reader = DirectoryReader.open(directory)) {
-            // è·å–æ–‡æ¡£æ•°é‡
+            // »ñÈ¡ÎÄµµÊıÁ¿
             System.out.println("numDocs: " + reader.numDocs());
             System.out.println("maxDocs: " + reader.maxDoc());
             System.out.println("deleteDocs: " + reader.numDeletedDocs());
@@ -184,7 +184,7 @@ public class IndexUtil {
             Document doc = null;
             for (int i = 0; i < ids.length; i++) {
 
-                // ä¸ä½¿ç”¨è¯„åˆ†
+                // ²»Ê¹ÓÃÆÀ·Ö
 //                doc = new Document();
 //                String et = emails[i].substring(emails[i].lastIndexOf("@") + 1);
 //                System.out.println(et);
@@ -197,7 +197,7 @@ public class IndexUtil {
 //                StringField nameFiled = new StringField("name", names[i], Field.Store.YES);
 //                doc.add(nameFiled);
 
-                // ä½¿ç”¨è¯„åˆ†
+                // Ê¹ÓÃÆÀ·Ö
                 String et = emails[i].substring(emails[i].lastIndexOf("@") + 1);
                 System.out.println(et);
                 doc = new Document();
@@ -216,11 +216,11 @@ public class IndexUtil {
                     StringField nameFiled = new StringField("name", names[i], Field.Store.YES);
                     doc.add(nameFiled);
 
-                    // å­˜å‚¨æ•°å­—
+                    // ´æ´¢Êı×Ö
                     IntField attachesField = new IntField("attach", attachs[i], Field.Store.YES);
                     doc.add(attachesField);
 
-                    // å­˜å‚¨æ—¥æœŸ
+                    // ´æ´¢ÈÕÆÚ
                     LongField dateField = new LongField("date", dates[i].getTime(), Field.Store.YES);
                     doc.add(dateField);
 
@@ -239,11 +239,11 @@ public class IndexUtil {
                     StringField nameFiled = new StringField("name", names[i], Field.Store.YES);
                     doc.add(nameFiled);
 
-                    // å­˜å‚¨æ•°å­—
+                    // ´æ´¢Êı×Ö
                     IntField attachesField = new IntField("attach", attachs[i], Field.Store.YES);
                     doc.add(attachesField);
 
-                    // å­˜å‚¨æ—¥æœŸ
+                    // ´æ´¢ÈÕÆÚ
                     LongField dateField = new LongField("date", dates[i].getTime(), Field.Store.YES);
                     doc.add(dateField);
                 }

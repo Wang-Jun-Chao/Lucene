@@ -57,7 +57,7 @@ public class TestIndex {
 
     @Test
     public void testSearch01() {
-         iu.search01();
+        iu.search01();
     }
 
     @Test
