@@ -1,5 +1,6 @@
 package org.itat.lucene.test;
 
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.BytesRef;
 import org.ita.lucene.util.FileIndexUtils;
@@ -50,11 +51,27 @@ public class TestSearch {
 
     @Test
     public void test02() {
-        // TermRangeFilter 已经不建议使用了
-        Filter trf = TermRangeFilter.newStringRange("filename", "Ant.he", "Ant.txt", true, true);
-//        TermRangeQuery trq = new TermRangeQuery("name", new BytesRef("a".getBytes()),
-//                new BytesRef("f".getBytes()), true, true);
+        // NOTE TermRangeFilter 已经不建议使用了,使用TermRangeQuery
+//        Filter trf = TermRangeFilter.newStringRange("filename", "Ant.he", "Ant.txt", true, true);
+//        st.searcherByFilter("Ant.he", trf);
+        // NOTE NumericRangeFilter 已经不建议使用了，使用NumericRangeQuery
+//        Filter filter = NumericRangeFilter.newLongRange("filename", 0L, 4096L, true, true);
 
-        st.searcherByFilter("Ant", trf);
+        Filter filter = new QueryWrapperFilter(new WildcardQuery(new Term("filename", "*.txt")));
+
+        st.searcherByFilter(filter);
+
+//        Query query = new TermRangeQuery("filename", new BytesRef("Abdera.he".getBytes()),
+//                new BytesRef("Ant.txt".getBytes()), true, true);
+//
+//        query = NumericRangeQuery.newLongRange("size", 0L, 4096L, true, true);
+//
+//        st.searcherByQuery(query);
+    }
+
+    @Test
+    public void test03() {
+        Query query = new WildcardQuery(new Term("filename", "*.txt"));
+        st.searcherByQuery(query);
     }
 }

@@ -53,17 +53,12 @@ public class SearchTest {
 
         return new IndexSearcher(reader);
     }
-    public void searcherByFilter(String queryStr, Filter filter) {
+
+    public void searcherByFilter(Filter filter) {
         try {
             IndexSearcher searcher = getSearcher();
-            QueryParser parser = new QueryParser("content", new StandardAnalyzer());
-            Query query = parser.parse(queryStr);
-            TopDocs tds;
-            if (filter != null) {
-                tds = searcher.search(query, filter, 500);
-            } else {
-                tds = searcher.search(query, 500);
-            }
+
+            TopDocs tds = searcher.search(filter, 500);
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             for (ScoreDoc sd : tds.scoreDocs) {
@@ -79,7 +74,7 @@ public class SearchTest {
                         doc.get("size"),
                         sdf.format(new Date(Long.parseLong(doc.get("date")))));
             }
-        } catch (ParseException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -119,22 +114,10 @@ public class SearchTest {
     }
 
 
-    public void searcherByQuery(Query query,String queryStr, Sort sort) {
+    public void searcherByQuery(Query query) {
         try {
             IndexSearcher searcher = getSearcher();
-            QueryParser parser = new QueryParser("content", new StandardAnalyzer());
-            BooleanQuery.Builder builder = new BooleanQuery.Builder();
-            builder.add(query, BooleanClause.Occur.MUST);
-            query = parser.parse(queryStr);
-            builder.add(query, BooleanClause.Occur.MUST);
-            query = builder.build();
-            TopDocs tds;
-            if (sort != null) {
-                tds = searcher.search(query, 500, sort);
-            } else {
-                tds = searcher.search(query, 500);
-            }
-
+            TopDocs tds = searcher.search(query, 500);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             for (ScoreDoc sd : tds.scoreDocs) {
                 Document doc = searcher.doc(sd.doc);
@@ -151,9 +134,6 @@ public class SearchTest {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
-
     }
 }
