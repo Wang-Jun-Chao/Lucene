@@ -66,11 +66,12 @@ public class SearchTest {
 //                System.out.println(sd.doc + ":(" + sd.score + ")\t[" + doc.get("filename") + "]\t[" + doc.get("path") + "]\t["
 //                        + doc.get("size") + "]\t[" + sdf.format(new Date(Long.parseLong(doc.get("date")))) + "]");
 
-                System.out.printf("%-5d %-10.10f %-30s %-50s %-8s %-20s\n",
+                System.out.printf("%-5d %-10.10f %-30s %-50s %-8s %-8s %-20s\n",
                         sd.doc,
                         sd.score,
                         doc.get("filename"),
                         doc.get("path"),
+                        doc.get("score"),
                         doc.get("size"),
                         sdf.format(new Date(Long.parseLong(doc.get("date")))));
             }
@@ -99,18 +100,18 @@ public class SearchTest {
 //                System.out.println(sd.doc + ":(" + sd.score + ")\t[" + doc.get("filename") + "]\t[" + doc.get("path") + "]\t["
 //                        + doc.get("size") + "]\t[" + sdf.format(new Date(Long.parseLong(doc.get("date")))) + "]");
 
-                System.out.printf("%-5d %-10.10f %-30s %-50s %-8s %-20s\n",
+                System.out.printf("%-5d %-10.10f %-30s %-50s %-8s %-8s %-20s\n",
                         sd.doc,
                         sd.score,
                         doc.get("filename"),
                         doc.get("path"),
+                        doc.get("score"),
                         doc.get("size"),
                         sdf.format(new Date(Long.parseLong(doc.get("date")))));
             }
         } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -121,14 +122,12 @@ public class SearchTest {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             for (ScoreDoc sd : tds.scoreDocs) {
                 Document doc = searcher.doc(sd.doc);
-//                System.out.println(sd.doc + ":(" + sd.score + ")\t[" + doc.get("filename") + "]\t[" + doc.get("path") + "]\t["
-//                        + doc.get("size") + "]\t[" + sdf.format(new Date(Long.parseLong(doc.get("date")))) + "]");
-
-                System.out.printf("%-5d %-10.10f %-30s %-50s %-8s %-20s\n",
+                System.out.printf("%-5d %-10.10f %-30s %-50s %-8s %-8s %-20s\n",
                         sd.doc,
                         sd.score,
                         doc.get("filename"),
                         doc.get("path"),
+                        doc.get("score"),
                         doc.get("size"),
                         sdf.format(new Date(Long.parseLong(doc.get("date")))));
             }
@@ -136,4 +135,6 @@ public class SearchTest {
             e.printStackTrace();
         }
     }
+
+
 }

@@ -50,7 +50,7 @@ public class IndexUtil {
             setDates();
             scores.put("itat.org", 2.0F);
             scores.put("zttc.edu", 1.5F);
-            directory = FSDirectory.open(Paths.get("d:/lucene/index02"));
+            directory = FSDirectory.open(Paths.get("d:/com.action.lucene/index02"));
             // 存储在内存中使用时要与index()方法一起使用
 //            directory = new RAMDirectory();
 //            index();

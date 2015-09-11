@@ -42,7 +42,7 @@ public class HelloLucene {
             // 建立在内存中
 //            Directory directory = new RAMDirectory();
             // 建立在硬盘上
-            Directory directory = FSDirectory.open(Paths.get("d:/lucene/index01"));
+            Directory directory = FSDirectory.open(Paths.get("d:/com.action.lucene/index01"));
 
             // 2、创建IndexWriter
             IndexWriterConfig iwc = new IndexWriterConfig(new StandardAnalyzer());
@@ -53,7 +53,7 @@ public class HelloLucene {
             Document doc = null;
 
             // 4、为Document添加Field
-            File f = new File("D:/lucene/example");
+            File f = new File("D:/com.action.lucene/example");
 
             for (File file : f.listFiles()) {
 
@@ -91,7 +91,7 @@ public class HelloLucene {
         try {
             // 1、创建Directory
             // 建立在硬盘上
-            Directory directory = FSDirectory.open(Paths.get("d:/lucene/index01"));
+            Directory directory = FSDirectory.open(Paths.get("d:/com.action.lucene/index01"));
 
             // 2、创建IndexReader
             IndexReader reader = DirectoryReader.open(directory);

@@ -7,6 +7,9 @@
       <module fileurl="file://$PROJECT_DIR$/03-LuceneSearcher/03-LuceneSearcher.iml" filepath="$PROJECT_DIR$/03-LuceneSearcher/03-LuceneSearcher.iml" />
       <module fileurl="file://$PROJECT_DIR$/04-LuceneAnalyzer/04-LuceneAnalyzer.iml" filepath="$PROJECT_DIR$/04-LuceneAnalyzer/04-LuceneAnalyzer.iml" />
       <module fileurl="file://$PROJECT_DIR$/05-LuceneAdvanceSearcher/05-LuceneAdvanceSearcher.iml" filepath="$PROJECT_DIR$/05-LuceneAdvanceSearcher/05-LuceneAdvanceSearcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/V3.5-01.04.01-建立索引/V3.5-01.04.01-建立索引.iml" filepath="$PROJECT_DIR$/V3.5-01.04.01-建立索引/V3.5-01.04.01-建立索引.iml" />
+      <module fileurl="file://$PROJECT_DIR$/V3.5-01.04.02-搜索索引/V3.5-01.04.02-搜索索引.iml" filepath="$PROJECT_DIR$/V3.5-01.04.02-搜索索引/V3.5-01.04.02-搜索索引.iml" />
+      <module fileurl="file://$PROJECT_DIR$/V5.3-01.04.00-入门示例/V5.3-01.04.00-入门示例.iml" filepath="$PROJECT_DIR$/V5.3-01.04.00-入门示例/V5.3-01.04.00-入门示例.iml" />
     </modules>
   </component>
 </project>

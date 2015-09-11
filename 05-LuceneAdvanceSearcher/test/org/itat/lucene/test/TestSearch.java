@@ -30,9 +30,9 @@ public class TestSearch {
     @Test
     public void test01() {
         // 按评分进行排序
-        st.searcherBySort("java", null);
+//        st.searcherBySort("java", null);
         // 通过doc的id进行排序
-//        st.searcherBySort("java", Sort.INDEXORDER);
+        st.searcherBySort("java", Sort.INDEXORDER);
         // 使用默认的评分进行排序
 //        st.searcherBySort("java", Sort.RELEVANCE);
         // 通过文件大小排序

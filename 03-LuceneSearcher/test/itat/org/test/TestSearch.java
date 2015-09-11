@@ -30,7 +30,7 @@ public class TestSearch {
 
     @Test
     public void testCopyFile() {
-        File dir = new File("d:/lucene/example/");
+        File dir = new File("d:/com.action.lucene/example/");
         try {
             for (File file : dir.listFiles()) {
                 String destFileName = FilenameUtils.getFullPath(file.getAbsolutePath()) +

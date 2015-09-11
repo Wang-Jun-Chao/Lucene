@@ -27,7 +27,7 @@ public class FileIndexUtils {
 
     static {
         try {
-            directory = FSDirectory.open(Paths.get("d:/lucene/files/"));
+            directory = FSDirectory.open(Paths.get("d:/com.action.lucene/files/"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,7 +46,7 @@ public class FileIndexUtils {
                 writer.deleteAll();
             }
 
-            File dir = new File("d:/lucene/example/");
+            File dir = new File("d:/com.action.lucene/example/");
             for (File file : dir.listFiles()) {
                 Document doc = new Document();
                 doc.add(new TextField("content", new FileReader(file)));
