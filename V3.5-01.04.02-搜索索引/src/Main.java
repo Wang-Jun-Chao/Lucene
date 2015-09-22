@@ -1,11 +1,9 @@
 import com.action.lucene.Indexer;
 import com.action.lucene.Searcher;
 import com.action.lucene.TextFilesFilter;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 
