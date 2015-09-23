@@ -40,7 +40,8 @@ public class IndexingTest {
         IndexSearcher searcher = new IndexSearcher(IndexReader.open(directory));
         Term t = new Term(filedName, searchString);
         Query query = new TermQuery(t);
-        int hitCount =
+//        int hitCount =
+        return 0;
     }
 
 
